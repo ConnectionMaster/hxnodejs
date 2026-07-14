@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -102,9 +102,8 @@ typedef RequestInit = {
 	@:optional var duplex:String;
 
 	/**
-		Undici-specific: custom dispatcher for the request.
-
-		TODO(section-6): type as undici `Dispatcher` if a module extern is added.
+		Undici-specific custom dispatcher for the request.
+		Left as `Any` until an undici `Dispatcher` extern exists.
 	**/
 	@:optional var dispatcher:Any;
 }

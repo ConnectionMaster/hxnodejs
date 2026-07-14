@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,9 +23,10 @@
 package js.node.web;
 
 /**
-	A queuing strategy for web streams.
+	A queuing strategy dictionary used by web stream constructors
+	(`ReadableStream`, `WritableStream`, `TransformStream`, etc.).
 
-	@see https://nodejs.org/api/webstreams.html#class-bytelengthqueuingstrategy
+	@see https://nodejs.org/api/webstreams.html
 **/
 typedef QueuingStrategy = {
 	/**

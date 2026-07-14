@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,6 +27,7 @@ import haxe.extern.EitherType;
 import js.lib.ArrayBuffer;
 import js.lib.Promise;
 import js.lib.Uint8Array;
+import js.node.url.URL;
 import js.node.web.Request.BodyInit;
 
 /**
@@ -44,6 +45,7 @@ extern class Response {
 	/**
 		Creates a new response with a different URL.
 	**/
+	@:overload(function(url:URL, ?status:Int):Response {})
 	static function redirect(url:String, ?status:Int):Response;
 
 	/**

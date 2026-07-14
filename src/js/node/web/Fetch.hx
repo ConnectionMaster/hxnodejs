@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,7 +29,8 @@ import js.node.web.Request.RequestInit;
 /**
 	Browser-compatible `fetch()` (undici), exposed as a static on `globalThis`.
 
-	Usage: `Fetch.fetch(url)` / `Fetch.fetch(url, init)`, or `js.Node.fetch(url)`.
+	Stable since Node.js v21.0.0. Usage: `Fetch.fetch(url)` / `Fetch.fetch(url, init)`,
+	or `js.Node.fetch(url)`.
 
 	@see https://nodejs.org/api/globals.html#fetch
 **/

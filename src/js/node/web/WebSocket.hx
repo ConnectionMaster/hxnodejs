@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,6 +22,7 @@
 
 package js.node.web;
 
+import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import js.lib.ArrayBuffer;
 import js.lib.ArrayBufferView;
@@ -29,6 +30,8 @@ import js.node.url.URL;
 
 /**
 	A browser-compatible `WebSocket` implementation (undici).
+
+	Stable since Node.js v22.4.0. Disable with `--no-experimental-websocket`.
 
 	@see https://nodejs.org/api/globals.html#class-websocket
 **/
@@ -69,7 +72,9 @@ extern class WebSocket extends EventTarget {
 **/
 typedef WebSocketInit = {
 	@:optional var protocols:EitherType<String, Array<String>>;
-	@:optional var headers:EitherType<Headers, Any>;
-	// TODO(section-6): type undici dispatcher options when available.
+	@:optional var headers:EitherType<Headers, EitherType<Array<Array<String>>, DynamicAccess<String>>>;
+	/**
+		Undici-specific custom dispatcher. Left as `Any` until an undici `Dispatcher` extern exists.
+	**/
 	@:optional var dispatcher:Any;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -41,5 +41,5 @@ extern class WritableStreamDefaultWriter {
 	function abort(?reason:Any):Promise<Void>;
 	function close():Promise<Void>;
 	function releaseLock():Void;
-	function write(chunk:Any):Promise<Void>;
+	function write(?chunk:Any):Promise<Void>;
 }
