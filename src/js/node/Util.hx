@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -37,7 +37,7 @@ import js.node.web.AbortSignal;
 /**
 	The `util` module is primarily designed to support the needs of Node.js' own internal APIs.
 
-	@see https://nodejs.org/api/util.html#util_util
+	@see https://nodejs.org/api/util.html
 **/
 @:jsRequire("util")
 extern class Util {
@@ -45,32 +45,42 @@ extern class Util {
 		Takes an `async` function (or a function that returns a `Promise`) and returns a function following the
 		error-first callback style, i.e. taking an `(err, value) => ...` callback as the last argument.
 
-		@see https://nodejs.org/api/util.html#util_util_callbackify_original
+		@see https://nodejs.org/api/util.html#utilcallbackifyoriginal
 	**/
 	// TODO(section-4): tighten callbackify return/arg types beyond Function
 	static function callbackify(original:Function):Function;
 
 	/**
-		The `util.debuglog()` method is used to create a function that conditionally writes debug messages to `stderr`
-		based on the existence of the `NODE_DEBUG` environment variable.
+		Creates a function that conditionally writes debug messages to `stderr` based on the
+		`NODE_DEBUG` environment variable.
 
-		@see https://nodejs.org/api/util.html#util_util_debuglog_section
+		The optional `callback` is invoked the first time the logging function is called with a more
+		optimized logger (no section-enable check on each call).
+
+		@see https://nodejs.org/api/util.html#utildebuglogsection-callback
 	**/
-	static function debuglog(section:String):Rest<Any>->Void;
+	static function debuglog(section:String, ?callback:DebugLogger->Void):DebugLogger;
+
+	/**
+		Alias for `util.debuglog`. Prefer this when only checking `.enabled` so the name does not imply logging.
+
+		@see https://nodejs.org/api/util.html#utildebugsection
+	**/
+	static function debug(section:String, ?callback:DebugLogger->Void):DebugLogger;
 
 	/**
 		The `util.deprecate()` method wraps `fn` (which may be a function or class) in such a way that it is marked
 		as deprecated.
 
-		@see https://nodejs.org/api/util.html#util_util_deprecate_fn_msg_code
+		@see https://nodejs.org/api/util.html#utildeprecatefn-msg-code-options
 	**/
-	static function deprecate<T:Function>(fun:T, msg:String, ?code:String):T;
+	static function deprecate<T:Function>(fun:T, msg:String, ?code:String, ?options:DeprecateOptions):T;
 
 	/**
 		The `util.format()` method returns a formatted string using the first argument as a `printf`-like format string
 		which can contain zero or more format specifiers.
 
-		@see https://nodejs.org/api/util.html#util_util_format_format_args
+		@see https://nodejs.org/api/util.html#utilformatformat-args
 	**/
 	@:overload(function(args:Rest<Any>):String {})
 	static function format(format:String, args:Rest<Any>):String;
@@ -79,7 +89,7 @@ extern class Util {
 		This function is identical to `util.format()`, except in that it takes an `inspectOptions` argument which
 		specifies options that are passed along to `util.inspect()`.
 
-		@see https://nodejs.org/api/util.html#util_util_formatwithoptions_inspectoptions_format_args
+		@see https://nodejs.org/api/util.html#utilformatwithoptionsinspectoptions-format-args
 	**/
 	@:overload(function(inspectOptions:InspectOptions, args:Rest<Any>):String {})
 	static function formatWithOptions(inspectOptions:InspectOptions, format:String, args:Rest<Any>):String;
@@ -87,7 +97,7 @@ extern class Util {
 	/**
 		Returns the string name for a numeric error code that comes from a Node.js API.
 
-		@see https://nodejs.org/api/util.html#util_util_getsystemerrorname_err
+		@see https://nodejs.org/api/util.html#utilgetsystemerrornameerr
 	**/
 	static function getSystemErrorName(err:Int):String;
 
@@ -109,15 +119,15 @@ extern class Util {
 	/**
 		Inherit the prototype methods from one `constructor` into another.
 
-		@see https://nodejs.org/api/util.html#util_util_inherits_constructor_superconstructor
+		@see https://nodejs.org/api/util.html#utilinheritsconstructor-superconstructor
 	**/
 	@:deprecated("Use class extends instead")
-	static function inherits(constructor:Class<Dynamic>, superConstructor:Class<Dynamic>):Void;
+	static function inherits(constructor:Class<Any>, superConstructor:Class<Any>):Void;
 
 	/**
 		The `util.inspect()` method returns a string representation of `object` that is intended for debugging.
 
-		@see https://nodejs.org/api/util.html#util_util_inspect_object_options
+		@see https://nodejs.org/api/util.html#utilinspectobject-options
 	**/
 	@:overload(function(object:Any, ?showHidden:Bool, ?depth:Int, ?colors:Bool):String {})
 	static function inspect(object:Any, ?options:InspectOptions):String;
@@ -125,15 +135,19 @@ extern class Util {
 	/**
 		Returns `true` if there is deep strict equality between `val1` and `val2`.
 
-		@see https://nodejs.org/api/util.html#util_util_isdeepstrictequal_val1_val2
+		When `options.skipPrototype` (or a bare `true` third argument) is set, prototype and constructor
+		comparison is skipped.
+
+		@see https://nodejs.org/api/util.html#utilisdeepstrictequalval1-val2-options
 	**/
-	static function isDeepStrictEqual(val1:Any, val2:Any):Bool;
+	@:overload(function(val1:Any, val2:Any, skipPrototype:Bool):Bool {})
+	static function isDeepStrictEqual(val1:Any, val2:Any, ?options:IsDeepStrictEqualOptions):Bool;
 
 	/**
 		Takes a function following the common error-first callback style, i.e. taking an `(err, value) => ...` callback
 		as the last argument, and returns a version that returns promises.
 
-		@see https://nodejs.org/api/util.html#util_util_promisify_original
+		@see https://nodejs.org/api/util.html#utilpromisifyoriginal
 	**/
 	// TODO(section-4): tighten promisify generic result typing
 	static function promisify(original:Function):Rest<Any>->Promise<Any>;
@@ -212,7 +226,7 @@ extern class Util {
 	static function getCallSites(?frameCount:Int, ?options:GetCallSitesOptions):Array<CallSiteObject>;
 
 	/**
-		Legacy alias of `getCallSites`.
+		Legacy alias of `getCallSites` (renamed in Node.js 22.12+ / 23.3+; removed as a separate export later).
 
 		@see https://nodejs.org/api/util.html#utilgetcallsitesframecount-options
 	**/
@@ -221,23 +235,31 @@ extern class Util {
 	static function getCallSite(?frameCount:Int, ?options:GetCallSitesOptions):Array<CallSiteObject>;
 
 	/**
-		Converts a POSIX signal name (e.g. `'SIGTERM'`) to the corresponding process exit code.
+		Converts a POSIX signal name (e.g. `'SIGTERM'`) to the corresponding process exit code
+		(`128 + signal number`).
+
+		@see https://nodejs.org/api/util.html#utilconvertprocesssignaltoexitcodesignal
 	**/
 	static function convertProcessSignalToExitCode(signal:String):Int;
 
 	/**
 		Enables or disables printing a stack trace when Node.js receives `SIGINT`.
+		Only available on the main thread.
+
+		@see https://nodejs.org/api/util.html#utilsettracesigtintenable
 	**/
 	static function setTraceSigInt(enable:Bool):Void;
 
 	/**
-		Deprecated predecessor of `Console.error`.
+		Shallow-copies enumerable properties from `source` onto `target`.
+
+		@see https://nodejs.org/api/util.html#util_extendtarget-source
 	**/
-	@:deprecated("Use js.Node.console.error instead")
-	static function debug(string:String):Void;
+	@:deprecated("Use Object.assign instead")
+	static function _extend(target:DynamicAccess<Any>, source:DynamicAccess<Any>):DynamicAccess<Any>;
 
 	/**
-		Deprecated predecessor of console.error.
+		Deprecated predecessor of `console.error` (removed; different from `Util.debug` / `debuglog`).
 	**/
 	@:deprecated("Use js.Node.console.error instead")
 	static function error(args:Rest<Any>):Void;
@@ -419,6 +441,15 @@ typedef InspectOptions = {
 	@:optional var maxArrayLength:Null<Int>;
 
 	/**
+		Specifies the maximum number of characters to include when formatting strings.
+		Set to `null` or `Infinity` to show all characters.
+		Set to `0` or negative to show no characters.
+
+		Default: `10000`.
+	**/
+	@:optional var maxStringLength:Null<Int>;
+
+	/**
 		The length at which input values are split across multiple lines.
 		Set to `Infinity` to format the input as a single line (in combination with `compact` set to `true` or any
 		number >= `1`).
@@ -446,7 +477,7 @@ typedef InspectOptions = {
 		If set to `true` the default sort is used.
 		If set to a function, it is used as a compare function.
 	**/
-	@:optional var sorted:EitherType<Bool, Any->Any->Int>;
+	@:optional var sorted:EitherType<Bool, String->String->Int>;
 
 	/**
 		If set to `true`, getters are inspected.
@@ -457,6 +488,13 @@ typedef InspectOptions = {
 		Default: `false`.
 	**/
 	@:optional var getters:EitherType<Bool, String>;
+
+	/**
+		If set to `true`, an underscore separates every three digits in all bigints and numbers.
+
+		Default: `false`.
+	**/
+	@:optional var numericSeparator:Bool;
 }
 
 /**
@@ -468,7 +506,7 @@ typedef StyleTextOptions = {
 
 		Default: `process.stdout`.
 	**/
-	@:optional var stream:Any;
+	@:optional var stream:IWritable;
 
 	/**
 		Value indicating whether `stream` is checked to see if it can handle colors.
@@ -476,6 +514,44 @@ typedef StyleTextOptions = {
 		Default: `true`.
 	**/
 	@:optional var validateStream:Bool;
+}
+
+/**
+	Options for `Util.deprecate`.
+**/
+typedef DeprecateOptions = {
+	/**
+		When `false`, do not change the prototype of the deprecated object while emitting the warning.
+
+		Default: `true`.
+	**/
+	@:optional var modifyPrototype:Bool;
+}
+
+/**
+	Options for `Util.isDeepStrictEqual`.
+**/
+typedef IsDeepStrictEqualOptions = {
+	/**
+		If `true`, prototype and constructor comparison is skipped during deep strict equality check.
+
+		Default: `false`.
+	**/
+	@:optional var skipPrototype:Bool;
+}
+
+/**
+	Logger returned by `Util.debuglog` / `Util.debug`.
+**/
+@:callable
+abstract DebugLogger(Dynamic) from Dynamic to Dynamic {
+	/**
+		`true` when `NODE_DEBUG` enables this logger's section.
+	**/
+	public var enabled(get, never):Bool;
+
+	inline function get_enabled():Bool
+		return this.enabled;
 }
 
 /**
@@ -506,7 +582,42 @@ typedef ParseArgsOptionDescriptor = {
 typedef ParseArgsResult = {
 	var values:DynamicAccess<Any>;
 	var positionals:Array<String>;
-	@:optional var tokens:Array<Any>;
+	@:optional var tokens:Array<ParseArgsToken>;
+}
+
+/**
+	A token returned when `ParseArgsConfig.tokens` is `true`.
+**/
+typedef ParseArgsToken = {
+	/**
+		One of `'option'`, `'positional'`, or `'option-terminator'`.
+	**/
+	var kind:String;
+
+	/**
+		Index of the argument in `args` that produced this token.
+	**/
+	var index:Int;
+
+	/**
+		Long name of an option token.
+	**/
+	@:optional var name:String;
+
+	/**
+		How the option appeared in `args` (e.g. `-f` or `--foo`).
+	**/
+	@:optional var rawName:String;
+
+	/**
+		Option or positional value (`undefined` for boolean options).
+	**/
+	@:optional var value:Null<EitherType<String, Bool>>;
+
+	/**
+		Whether an option value was specified inline (e.g. `--foo=bar`).
+	**/
+	@:optional var inlineValue:Null<Bool>;
 }
 
 /**
@@ -527,6 +638,14 @@ typedef GetCallSitesOptions = {
 typedef CallSiteObject = {
 	var functionName:String;
 	var scriptName:String;
+	/**
+		Unique script id (Chrome DevTools protocol `Runtime.ScriptId`).
+	**/
+	var scriptId:String;
 	var lineNumber:Int;
 	var columnNumber:Int;
+	/**
+		Deprecated alias of `columnNumber` (still present on some Node versions).
+	**/
+	@:optional var column:Int;
 }
