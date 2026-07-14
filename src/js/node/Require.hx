@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,6 +24,11 @@ package js.node;
 
 import haxe.DynamicAccess;
 
+/**
+	CommonJS `require` function and its helpers.
+
+	@see https://nodejs.org/docs/latest-v24.x/api/modules.html#requireid
+**/
 @:native("require")
 extern class Require {
 	/**
@@ -44,7 +49,7 @@ extern class Require {
 
 		@see https://nodejs.org/api/modules.html#modules_require_cache
 	**/
-	static var cache(default, null):DynamicAccess<Module>;
+	static final cache:DynamicAccess<Module>;
 
 	/**
 		Instruct require on how to handle certain file extensions.
@@ -57,7 +62,7 @@ extern class Require {
 		and complexities that are best left untouched.
 	**/
 	@:deprecated("Use compiling to JavaScript ahead of time instead")
-	static var extensions(default, null):DynamicAccess<Dynamic>;
+	static final extensions:DynamicAccess<Dynamic>;
 
 	/**
 		The `Module` object representing the entry script loaded when the Node.js process launched.
@@ -65,7 +70,7 @@ extern class Require {
 
 		@see https://nodejs.org/api/modules.html#modules_require_main
 	**/
-	static var main(default, null):Module;
+	static final main:Module;
 
 	/**
 		Use the internal `require()` machinery to look up the location of a module,
