@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,7 +34,7 @@ enum abstract Http2StreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T
 	/**
 		Emitted when the `Http2Stream` instance is aborted abnormally.
 	**/
-	var Aborted:Http2StreamEvent<Void->Void> = "aborted";
+	var Aborted:Http2StreamEvent<() -> Void> = "aborted";
 
 	/**
 		Emitted when an error occurs while attempting to send a frame.
@@ -44,29 +44,29 @@ enum abstract Http2StreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T
 	/**
 		Emitted when the `Http2Stream` has been opened and is ready for use.
 	**/
-	var Ready:Http2StreamEvent<Void->Void> = "ready";
+	var Ready:Http2StreamEvent<() -> Void> = "ready";
 
 	/**
 		Emitted when the `Http2Stream` is destroyed (Duplex `'close'`).
 		No listener arguments; use `stream.rstCode` for the `RST_STREAM` error code.
 		(The legacy `'streamClosed'` event is no longer emitted on Node.js LTS.)
 	**/
-	var Close:Http2StreamEvent<Void->Void> = "close";
+	var Close:Http2StreamEvent<() -> Void> = "close";
 
 	/**
 		Emitted after the stream times out due to inactivity.
 	**/
-	var Timeout:Http2StreamEvent<Void->Void> = "timeout";
+	var Timeout:Http2StreamEvent<() -> Void> = "timeout";
 
 	/**
 		Emitted when trailing headers are received.
 	**/
-	var Trailers:Http2StreamEvent<(trailers:Http2Headers, flags:Int) -> Void> = "trailers";
+	var Trailers:Http2StreamEvent<(trailers:Http2Headers, flags:Int, rawHeaders:Array<String>) -> Void> = "trailers";
 
 	/**
 		Emitted when the stream is ready for trailing headers to be sent.
 	**/
-	var WantTrailers:Http2StreamEvent<Void->Void> = "wantTrailers";
+	var WantTrailers:Http2StreamEvent<() -> Void> = "wantTrailers";
 }
 
 /**
@@ -141,12 +141,11 @@ extern class Http2Stream extends Duplex<Http2Stream> {
 	/**
 		Closes the stream by sending an `RST_STREAM` frame.
 	**/
-	function close(?code:Int, ?callback:Void->Void):Void;
+	function close(?code:Int, ?callback:() -> Void):Void;
 
 	/**
-		Priority signaling is no longer supported in Node.js.
-
-		// TODO(section-3): remove once callers migrate off deprecated stream.priority
+		Empty method retained for compatibility. Priority signaling is no longer supported
+		(RFC 9113); calling this triggers a runtime warning since Node.js v24.2.0.
 	**/
 	@:deprecated("Priority signaling is no longer supported in Node.js")
 	function priority(options:Any):Void;
@@ -154,7 +153,7 @@ extern class Http2Stream extends Duplex<Http2Stream> {
 	/**
 		Sets the stream timeout value.
 	**/
-	function setTimeout(msecs:Int, ?callback:Void->Void):Void;
+	function setTimeout(msecs:Int, ?callback:() -> Void):Void;
 
 	/**
 		Sends a trailing `HEADERS` frame. Must be called after `'wantTrailers'`.

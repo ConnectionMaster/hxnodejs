@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -38,12 +38,12 @@ enum abstract Http2ServerResponseEvent<T:haxe.Constraints.Function>(Event<T>) to
 	/**
 		Indicates that the underlying `Http2Stream` was terminated before `response.end()` was called or able to flush.
 	**/
-	var Close:Http2ServerResponseEvent<Void->Void> = "close";
+	var Close:Http2ServerResponseEvent<() -> Void> = "close";
 
 	/**
 		Emitted when the response has been sent.
 	**/
-	var Finish:Http2ServerResponseEvent<Void->Void> = "finish";
+	var Finish:Http2ServerResponseEvent<() -> Void> = "finish";
 }
 
 /**
@@ -144,7 +144,7 @@ extern class Http2ServerResponse extends Writable<Http2ServerResponse> {
 	/**
 		Sets the `Http2Stream`'s timeout value to `msecs`.
 	**/
-	function setTimeout(msecs:Int, ?callback:Void->Void):Http2ServerResponse;
+	function setTimeout(msecs:Int, ?callback:() -> Void):Http2ServerResponse;
 
 	/**
 		Returns a `Proxy` object that acts as a `net.Socket` (or `tls.TLSSocket`)
@@ -179,14 +179,15 @@ extern class Http2ServerResponse extends Writable<Http2ServerResponse> {
 
 	/**
 		Sends an arbitrary HTTP 1xx informational response.
+		After final response headers are sent this is a no-op and returns `false`.
 		Added in Node.js v24.18.0 (Active LTS); not available on Maintenance LTS 22.x.
 	**/
 	function writeInformation(statusCode:Int, ?headers:Http2Headers):Bool;
 
 	/**
-		Sends a response header to the request.
+		Sends a response header to the request. Returns `this` for chaining with `end()`.
 	**/
-	@:overload(function(statusCode:Int, ?headers:Http2Headers):Void {})
-	@:overload(function(statusCode:Int, statusMessage:String, ?headers:Http2Headers):Void {})
-	function writeHead(statusCode:Int, ?headers:DynamicAccess<EitherType<String, Array<String>>>):Void;
+	@:overload(function(statusCode:Int, ?headers:Http2Headers):Http2ServerResponse {})
+	@:overload(function(statusCode:Int, statusMessage:String, ?headers:Http2Headers):Http2ServerResponse {})
+	function writeHead(statusCode:Int, ?headers:DynamicAccess<EitherType<String, Array<String>>>):Http2ServerResponse;
 }
