@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,18 +25,33 @@ package js.node.perf_hooks;
 /**
 	A `Histogram` that is periodically updated on a given interval.
 
-	@see https://nodejs.org/api/perf_hooks.html#class-intervalhistogram-extends-histogram
+	@see https://nodejs.org/docs/latest-v24.x/api/perf_hooks.html#class-intervalhistogram-extends-histogram
 **/
 extern class IntervalHistogram extends Histogram {
 	/**
 		Disables the update interval timer. Returns `true` if the timer was stopped,
 		`false` if it was already stopped.
+
+		@see https://nodejs.org/docs/latest-v24.x/api/perf_hooks.html#histogramdisable
 	**/
 	function disable():Bool;
 
 	/**
 		Enables the update interval timer. Returns `true` if the timer was started,
 		`false` if it was already started.
+
+		@see https://nodejs.org/docs/latest-v24.x/api/perf_hooks.html#histogramenable
 	**/
 	function enable():Bool;
+
+	/**
+		Disables the update interval timer when the histogram is disposed.
+
+		Corresponds to JavaScript `histogram[Symbol.dispose]()`. Added in Node.js v24.2.0.
+
+		@see https://nodejs.org/docs/latest-v24.x/api/perf_hooks.html#histogramsymboldispose
+	**/
+	public inline function dispose():Void {
+		js.Syntax.code("{0}[Symbol.dispose]()", this);
+	}
 }
