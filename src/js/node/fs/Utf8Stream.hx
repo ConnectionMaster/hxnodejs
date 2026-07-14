@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2020 Haxe Foundation
+ * Copyright (C)2014-2026 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,69 +35,69 @@ import js.node.events.EventEmitter.Event;
 
 	Stability: 1 - Experimental (added in Node.js v24.6.0).
 
-	@see https://nodejs.org/api/fs.html#class-fsutf8stream
+	@see https://nodejs.org/docs/latest-v24.x/api/fs.html#class-fsutf8stream
 **/
 @:jsRequire("fs", "Utf8Stream")
 extern class Utf8Stream extends EventEmitter<Utf8Stream> {
 	/**
 		Whether the stream is appending to the file or truncating it.
 	**/
-	var append(default, null):Bool;
+	final append:Bool;
 
 	/**
 		The type of data that can be written: `'utf8'` or `'buffer'`.
 	**/
-	var contentMode(default, null):String;
+	final contentMode:String;
 
 	/**
 		The file descriptor being written to.
 	**/
-	var fd(default, null):Null<Int>;
+	final fd:Null<Int>;
 
 	/**
 		The file being written to.
 	**/
-	var file(default, null):Null<FsPath>;
+	final file:Null<FsPath>;
 
 	/**
 		Whether `fs.fsyncSync()` is performed after every write.
 	**/
-	var fsync(default, null):Bool;
+	final fsync:Bool;
 
 	/**
 		Maximum length of the internal buffer.
 	**/
-	var maxLength(default, null):Null<Int>;
+	final maxLength:Null<Int>;
 
 	/**
 		Minimum length of the internal buffer required before flushing.
 	**/
-	var minLength(default, null):Null<Int>;
+	final minLength:Null<Int>;
 
 	/**
 		Whether the stream ensures the destination directory exists.
 	**/
-	var mkdir(default, null):Bool;
+	final mkdir:Bool;
 
 	/**
 		Mode of the file being written to.
 	**/
-	var mode(default, null):Null<FsMode>;
+	final mode:Null<FsMode>;
 
 	/**
 		Milliseconds between periodic flushes (`0` disables).
 	**/
-	var periodicFlush(default, null):Int;
+	final periodicFlush:Int;
 
 	/**
 		Whether the stream writes synchronously.
 	**/
-	var sync(default, null):Bool;
+	final sync:Bool;
 
 	/**
 		Whether the stream is currently writing.
 	**/
-	var writing(default, null):Bool;
+	final writing:Bool;
 
 	function new(?options:Utf8StreamOptions);
 
@@ -114,7 +114,7 @@ extern class Utf8Stream extends EventEmitter<Utf8Stream> {
 	/**
 		Writes the current buffer to the file if a write is not already in progress.
 	**/
-	function flush(callback:Null<Error>->Void):Void;
+	function flush(callback:(err:Null<Error>) -> Void):Void;
 
 	/**
 		Flushes buffered data synchronously.
@@ -137,22 +137,22 @@ extern class Utf8Stream extends EventEmitter<Utf8Stream> {
 	Events emitted by `Utf8Stream`.
 **/
 enum abstract Utf8StreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	var Close:Utf8StreamEvent<Void->Void> = "close";
-	var Drain:Utf8StreamEvent<Void->Void> = "drain";
+	var Close:Utf8StreamEvent<() -> Void> = "close";
+	var Drain:Utf8StreamEvent<() -> Void> = "drain";
 
 	/**
 		Emitted when `maxLength` is reached and data is dropped.
 	**/
-	var Drop:Utf8StreamEvent<EitherType<String, Buffer>->Void> = "drop";
+	var Drop:Utf8StreamEvent<(data:EitherType<String, Buffer>) -> Void> = "drop";
 
-	var Error:Utf8StreamEvent<Error->Void> = "error";
-	var Finish:Utf8StreamEvent<Void->Void> = "finish";
-	var Ready:Utf8StreamEvent<Void->Void> = "ready";
+	var Error:Utf8StreamEvent<(err:Error) -> Void> = "error";
+	var Finish:Utf8StreamEvent<() -> Void> = "finish";
+	var Ready:Utf8StreamEvent<() -> Void> = "ready";
 
 	/**
-		Emitted when a write completes; argument is bytes written.
+		Emitted when a write completes; argument is the number of bytes written.
 	**/
-	var Write:Utf8StreamEvent<Int->Void> = "write";
+	var Write:Utf8StreamEvent<(bytesWritten:Int) -> Void> = "write";
 }
 
 /**
@@ -184,7 +184,7 @@ typedef Utf8StreamOptions = {
 	/**
 		Custom `fs` implementation for mocking / testing.
 	**/
-	// TODO(section-2): type as structural fs subset once practical
+	// TODO: type as structural fs subset once practical
 	@:optional var fs:Dynamic;
 
 	/**
@@ -227,7 +227,7 @@ typedef Utf8StreamOptions = {
 	/**
 		Called on `EAGAIN` / `EBUSY`; return `true` to retry.
 	**/
-	@:optional var retryEAGAIN:Null<Error>->Int->Int->Bool;
+	@:optional var retryEAGAIN:(err:Null<Error>, writeBufferLen:Int, remainingBufferLen:Int) -> Bool;
 
 	/**
 		Perform writes synchronously.
